@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use doson::DataValue;
-use pyo3::{prelude::*, types::PyList};
+use pyo3::prelude::*;
 
 #[pyfunction]
 fn loads(value: String) -> PyResult<PyObject> {
