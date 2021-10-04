@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{any::{Any, TypeId}, collections::HashMap};
 
 use doson::DataValue;
 use pyo3::prelude::*;
@@ -36,11 +36,21 @@ fn loads(value: String) -> PyResult<PyObject> {
     Ok(result)
 }
 
+#[pyfunction]
+fn dumps(object: PyObject) -> PyResult<String> {
+    todo!()
+}
+
+fn object_to_value() {
+    todo!()
+}
+
 /// A Python module implemented in Rust. The name of this function must match
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
 #[pymodule]
 fn doson4py(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(loads, m)?)?;
+    m.add_function(wrap_pyfunction!(dumps, m)?)?;
     Ok(())
 }
