@@ -1,4 +1,4 @@
-use std::{any::{Any, TypeId}, collections::HashMap};
+use std::collections::HashMap;
 
 use doson::DataValue;
 use pyo3::prelude::*;
@@ -52,9 +52,6 @@ fn object_to_value(object: PyObject) -> DataValue {
     let gil = pyo3::Python::acquire_gil();
     let py = gil.python();
 
-    // type list:
-    // String - str
-
     let temp = object.extract::<String>(py);
     if temp.is_ok() {
         return DataValue::String(temp.unwrap());
@@ -78,10 +75,35 @@ fn object_to_value(object: PyObject) -> DataValue {
 
         for item in temp {
             let val = object_to_value(item);
+            result.push(val);
         }
 
+        return DataValue::List(result);
+    }
 
+    let temp = object.extract::<HashMap<String, PyObject>>(py);
+    if temp.is_ok() {
 
+        let temp = temp.unwrap();
+        let mut result: HashMap<String, DataValue> = Default::default();
+
+        for (key, item) in temp {
+            let val = object_to_value(item);
+            result.insert(key, val);
+        }
+
+        return DataValue::Dict(result);
+    }
+
+    let temp = object.extract::<(PyObject, PyObject)>(py);
+    if temp.is_ok() {
+
+        let temp = temp.unwrap();
+
+        return DataValue::Tuple((
+            Box::new( object_to_value(temp.0) ),
+            Box::new( object_to_value(temp.1) ),
+        ));
     }
 
     DataValue::None
