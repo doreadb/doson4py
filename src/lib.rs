@@ -38,12 +38,53 @@ fn loads(value: String) -> PyResult<PyObject> {
 
 #[pyfunction]
 fn dumps(object: PyObject) -> PyResult<String> {
-    todo!()
+    
+    let val = object_to_value(object);
+
+    println!("{:?}",val);
+
+    Ok(String::new())
 }
 
 // PyObject to DataValue
-fn object_to_value() {
-    todo!()
+fn object_to_value(object: PyObject) -> DataValue {
+    
+    let gil = pyo3::Python::acquire_gil();
+    let py = gil.python();
+
+    // type list:
+    // String - str
+
+    let temp = object.extract::<String>(py);
+    if temp.is_ok() {
+        return DataValue::String(temp.unwrap());
+    }
+
+    let temp = object.extract::<bool>(py);
+    if temp.is_ok() {
+        return DataValue::Boolean(temp.unwrap());
+    }
+
+    let temp = object.extract::<f64>(py);
+    if temp.is_ok() {
+        return DataValue::Number(temp.unwrap());
+    }
+
+    let temp = object.extract::<Vec<PyObject>>(py);
+    if temp.is_ok() {
+
+        let temp = temp.unwrap();
+        let mut result: Vec<DataValue> = vec![];
+
+        for item in temp {
+            let val = object_to_value(item);
+        }
+
+
+
+    }
+
+    DataValue::None
 }
 
 /// A Python module implemented in Rust. The name of this function must match
