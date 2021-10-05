@@ -8,6 +8,14 @@ import doson4py as doson
 
 def main():
 
+    # 基本数据类型测试
+    basetype = [
+        doson.loads('-5.2'),
+        doson.loads('"String"'),
+        doson.loads('true'),
+    ]
+    assert (basetype[0] == -5.2 and basetype[1] == "String" and basetype[2] == True)
+
     # 内包含两个数字的元组集
     tuple = doson.loads('(1,2)')
     assert tuple == (1, 2)

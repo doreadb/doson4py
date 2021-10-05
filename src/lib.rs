@@ -114,7 +114,10 @@ fn object_to_value(object: PyObject) -> DataValue {
 /// import the module.
 #[pymodule]
 fn doson4py(_py: Python, m: &PyModule) -> PyResult<()> {
+
     m.add_function(wrap_pyfunction!(loads, m)?)?;
     m.add_function(wrap_pyfunction!(dumps, m)?)?;
+
     Ok(())
+
 }
