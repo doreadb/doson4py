@@ -41,9 +41,7 @@ fn dumps(object: PyObject) -> PyResult<String> {
     
     let val = object_to_value(object);
 
-    println!("{:?}",val);
-
-    Ok(String::new())
+    Ok(String::from(val.to_string()))
 }
 
 // PyObject to DataValue
@@ -65,6 +63,17 @@ fn object_to_value(object: PyObject) -> DataValue {
     let temp = object.extract::<f64>(py);
     if temp.is_ok() {
         return DataValue::Number(temp.unwrap());
+    }
+
+    let temp = object.extract::<(PyObject, PyObject)>(py);
+    if temp.is_ok() {
+
+        let temp = temp.unwrap();
+
+        return DataValue::Tuple((
+            Box::new( object_to_value(temp.0) ),
+            Box::new( object_to_value(temp.1) ),
+        ));
     }
 
     let temp = object.extract::<Vec<PyObject>>(py);
@@ -93,17 +102,6 @@ fn object_to_value(object: PyObject) -> DataValue {
         }
 
         return DataValue::Dict(result);
-    }
-
-    let temp = object.extract::<(PyObject, PyObject)>(py);
-    if temp.is_ok() {
-
-        let temp = temp.unwrap();
-
-        return DataValue::Tuple((
-            Box::new( object_to_value(temp.0) ),
-            Box::new( object_to_value(temp.1) ),
-        ));
     }
 
     DataValue::None
