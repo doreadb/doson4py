@@ -31,6 +31,10 @@ fn loads(value: String) -> PyResult<PyObject> {
         DataValue::Tuple(v) => {
             (loads(v.0.to_string())?, loads(v.1.to_string())?).into_py(py)
         },
+        DataValue::Binary(v) => {
+            let temp = v.read();
+            temp.into_py(py)
+        }
     };
 
     Ok(result)
